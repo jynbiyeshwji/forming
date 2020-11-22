@@ -1,0 +1,57 @@
+<template>
+	<el-button type="primary" @click="ImportFile">
+		导入
+	</el-button>
+	<el-input
+		name="input-b3[]" 
+		style="display: none;" 
+		type="file" 
+		@change="upFileclick()"
+	></el-input>
+</template>
+
+<script>
+	export default {
+		name: 'Import',
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			ImportFile() {
+				
+			},
+			upFileclick: function () {
+				if (document.getElementById("upFile").files.length > 0) {
+					$(".tp-man").show();
+					var formData = new FormData();
+			
+					formData.append('upFile', document.getElementById("upFile").files[0]);
+					formData.append('name', userId);
+					$.postFile("http://10.194.179.40:4003/eqimport/importReportInfo", formData, function (result) {
+						document.getElementById("upFile").outerHTML = document.getElementById("upFile").outerHTML;
+						$("#upFile").change(function () {
+							vmtemp.upFileclick();
+						});
+						console.log(result);
+						var map = eval('(' + result + ')');
+						console.log(map);
+						if (map.res == 'OK') {
+							toastr.success(map.msg);
+							$("#tb_departments").bootstrapTable('refresh');
+						} else {
+							toastr.error(map.msg);
+						}
+					});
+				}
+				else {
+					vmtemp.msg = "请上传文件";
+				}
+			}
+		}
+	}
+</script>
+
+<style>
+</style>
